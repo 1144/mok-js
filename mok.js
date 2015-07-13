@@ -1,8 +1,3 @@
-/*--
-	mokjs - 前端开发服务框架 - 模块JS
-	-author hahaboy | @攻城氏
-	-site http://mokjs.com/
-*/
 var url = require('url'),
 	path = require('path'),
 	fs = require('fs'),

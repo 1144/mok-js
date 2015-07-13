@@ -1,6 +1,7 @@
 /*--
-	文档生成工具，提取代码注释生成文档。
-	-site http://mokjs.com/mokdoc/
+	mokjs - 前端开发服务框架 - 模块JS
+	-author hahaboy | @攻城氏
+	-site http://mokjs.com/
 */
 var mok = {};
 
@@ -15,6 +16,6 @@ mok.start = function (config) {
 module.exports = mok;
 
 //捕获漏网的异常
-process.on('uncaughtException', function (ex) { //捕获漏网的异常
+process.on('uncaughtException', function (ex) {
 	console.error('\nMOKJS Uncaught Exception: '+ex.stack);
 });

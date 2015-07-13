@@ -1,6 +1,6 @@
 {
   "name": "mok-js",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "前端开发服务框架",
   "license": "MIT",
   "homepage": "https://mokjs.com/",
@@ -9,7 +9,7 @@
     "url": "git+https://github.com/1144/mok-js.git"
   },
   "bin": {
-    "mok": "./mok.js"
+    "mok": "./bin/mok"
   },
   "author": {
     "name": "Liming Feng",
