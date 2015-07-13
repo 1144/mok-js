@@ -3,8 +3,7 @@ var url = require('url'),
 	fs = require('fs'),
 	MIME = require('./common/mime'),
 	CONF,
-	mok_config = process.cwd()+'/mok-config.js',
-	conf_file = process.argv[1],
+	conf_file = path.resolve(process.cwd()+'/mok-config.js'),
 	all_routes, // = CONF.routes,
 	outputJs = require('./mok4js/main').output,
 	test_min = {}; //项目是否处于测试压缩文件模式
@@ -17,7 +16,9 @@ function watchConfig(file) {
 		if (update && eventType==='change') { //防止重复触发
 			require.cache[file] = null;
 			try {
-				require(file);
+				CONF = require(file);
+				all_routes = CONF.routes;
+				fixPrjConf(CONF.projects);
 				var t = new Date(),
 					h = t.getHours(), m = t.getMinutes(), s = t.getSeconds();
 				console.log('MOKJS-100: 配置更新成功！(Time: '+(h>9 ? h : '0'+h)+
@@ -277,22 +278,29 @@ function createServer(routes, default_port) {
 }
 
 var started = false;
-function startMok(conf) {
+function start(conf) {
+	if (started) {return}
+	started = true;
 	CONF = conf;
 	all_routes = conf.routes;
 	fixPrjConf(conf.projects);
-	if (!started) {
-		createServer(conf.routes, ':'+conf.http_port);
-		watchConfig(mok_config);
-		conf.proxy_conf && require('./mok_modules/mok_proxy').start(conf.proxy_conf);
+	createServer(conf.routes, ':'+conf.http_port);
+	watchConfig(conf_file);
+	conf.proxy_conf && require('./mok_modules/mok_proxy').start(conf.proxy_conf);
+}
+
+exports.start = start;
+exports.watchConfig = function (file) {
+	file = path.resolve(process.cwd()+'/'+file);
+	if (file!==conf_file) {
+		conf_file = file; //防止重复监听配置文件
+		watchConfig(file);
 	}
-	started = true;
-}
+};
 
-if (fs.existsSync(mok_config)) {
-	startMok(require(mok_config));
+if (fs.existsSync(conf_file)) {
+	start(require(conf_file));
 } else {
-	mok_config = process.argv[1];
+	conf_file = process.argv[1];
+	conf_file.slice(-3)==='.js' || (conf_file += '.js');
 }
-
-exports.start = startMok;

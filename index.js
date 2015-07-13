@@ -13,6 +13,10 @@ mok.start = function (config) {
 	require('./mok').start(config);
 };
 
+mok.watchConfig = function (file) {
+	require('./mok').watchConfig(file);
+};
+
 module.exports = mok;
 
 //捕获漏网的异常
