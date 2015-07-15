@@ -146,6 +146,7 @@ function outputFile(file, file_ext, response) {
 	if (fs.existsSync(file)) {
 		if (fs.statSync(file).isFile()) {
 			response.writeHead(200, {
+				'Access-Control-Allow-Origin': '*',
 				'Cache-Control': 'no-cache,max-age=0',
 				'Content-Type': MIME[file_ext] || 'unknown'
 			});
@@ -170,6 +171,7 @@ function staticServe(match, request, response, route) {
 		if (fs.existsSync(file)) {
 			if (fs.statSync(file).isFile()) { //file
 				response.writeHead(200, {
+					'Access-Control-Allow-Origin': '*',
 					'Cache-Control': 'no-cache,max-age=0',
 					'Content-Type': MIME[path.extname(filename).toLowerCase()] || 'unknown'
 				});
