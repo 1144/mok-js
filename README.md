@@ -2,7 +2,8 @@
 
 # mokjs - 前端开发服务框架
 
-JS/CSS/HTML模块化开发，web服务器，代理服务器，前端开发工具集成。
+解决JS/CSS/HTML模块化开发问题，同时作为前端开发时常用到的web服务器、反向代理服务器、工具集成平台等。
+mok4js解决JavaScript模块化，moktext解决CSS和HTML模块化。
 
 ## 项目网站（详细文档）
 

@@ -97,7 +97,7 @@ exports.build = function (argv, prj_conf, response) {
 		depended_list = [];
 
 	all_files['mok'] = fs.readFileSync(__dirname+'/br-mok-'+
-		(cmd_spec ? 'CMD.js' : 'Modules.js'), 'utf8').replace(/{mok}/g, mok_global);
+		(cmd_spec ? 'CMD.js' : 'CommonJS.js'), 'utf8').replace(/{mok}/g, mok_global);
 	versions['mok'] || (versions['mok'] = ['1', CURRENT_VER, '', 'mok', 'new']);
 	
 	//创建构建目录
@@ -130,7 +130,7 @@ exports.build = function (argv, prj_conf, response) {
 				while (req_ms.length) {
 					line = req_ms.shift()+'.js'; //复用line
 					depend_ms.push(line);
-					all_files[line] || err_log.push('MOKJS-005: '+file+' 依赖的模块 '+
+					all_files[line] || err_log.push('MOKJS-401: '+file+' 依赖的模块 '+
 						line.slice(0, -3)+' 不存在！<br/>line '+(i + 1)+': '+lines[i]);
 				}
 			}
@@ -160,7 +160,7 @@ exports.build = function (argv, prj_conf, response) {
 				while (req_ms.length) {
 					line = req_ms.shift()+'.js'; //复用line
 					depend_ms.push(line);
-					all_files[line] || err_log.push('MOKJS-005: '+file+' 依赖的模块 '+
+					all_files[line] || err_log.push('MOKJS-401: '+file+' 依赖的模块 '+
 						line.slice(0, -3)+' 不存在！<br/>line '+(i + 1)+': '+lines[i]);
 				}
 			}
@@ -307,7 +307,7 @@ exports.build = function (argv, prj_conf, response) {
 		//在本次版本目录下创建_boot.js文件
 		fc = all_files['boot.js'];
 		if (!fc) {
-			err_log.push('MOKJS-006: 文件 boot.js 不存在！');
+			err_log.push('MOKJS-405: 文件 boot.js 不存在！');
 			return;
 		}
 		fc = fc.replace('//<VERSIONS/>', 'vers="1:'+

@@ -61,7 +61,7 @@ function combineCMD(file) {
 					fs.existsSync(prj_path+line) &&
 					fs.statSync(prj_path+line).isFile() ?
 						combineCMD(line) :
-						err_log.push('MOKJS-005: '+file+' 依赖的模块 '+
+						err_log.push('MOKJS-401: '+file+' 依赖的模块 '+
 							line.slice(0, -3)+' 不存在！\nline '+(i+1)+': '+lines[i]);
 				}
 			}
@@ -81,7 +81,7 @@ function combine(file) {
 
 	var file_content = [];
 	file_content.push('\r\n/* ===== '+file+' ===== */\r\n'+
-		mok_global+'["'+umok_global+til.getModuleAbbr(file.slice(0, -3))+
+		mok_global+'["'+util.getModuleAbbr(file.slice(0, -3))+
 		'"]=function(require, module, exports){');
 
 	var lines = fs.readFileSync(prj_path+file, charset).replace(reg_comment, '')
@@ -103,7 +103,7 @@ function combine(file) {
 					fs.existsSync(prj_path+line) &&
 					fs.statSync(prj_path+line).isFile() ?
 						combine(line) :
-						err_log.push('MOKJS-005: '+file+' 依赖的模块 '+
+						err_log.push('MOKJS-401: '+file+' 依赖的模块 '+
 							line.slice(0, -3)+' 不存在！\nline '+(i+1)+': '+lines[i]);
 				}
 			}
@@ -118,7 +118,8 @@ function combine(file) {
 //输出JS
 exports.output = function (filename, prj_conf, response) {
 	prj_path = prj_conf.path;
-	filename = filename[0]==='.' ? util.resolvePath('main/',filename) : 'main/'+filename;
+	var is_main = filename[0]!=='.';
+	filename = is_main ? 'main/'+filename : util.resolvePath('main/', filename);
 	var file = prj_path+filename,
 		cmd_spec = prj_conf.modular_spec==='CMD',
 		is_common = filename===prj_conf.common_js;
@@ -142,8 +143,9 @@ exports.output = function (filename, prj_conf, response) {
 		} else {
 			response.write(file_tree.join('\r\n')+'\r\n*/\r\n');
 			response.write(fs.readFileSync(cmd_spec ? __dirname+'/br-mok-CMD.js' :
-				__dirname+'/br-mok-Modules.js', 'utf8').replace(/{mok}/g, mok_global));
-			response.end(contents+'\r\nrequire("'+filename.slice(0, -3)+'");\r\n');
+				__dirname+'/br-mok-CommonJS.js', 'utf8').replace(/{mok}/g, mok_global));
+			response.write(contents);
+			response.end(is_main ? '\r\nrequire("'+filename.slice(0, -3)+'");' : '');
 		}
 		is_common && prj_conf.common_js && (common_combined = combined_list);
 		err_log = contents = combined_list = null;

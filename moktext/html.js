@@ -22,7 +22,7 @@ var parseJson = function (jsonString) {
 	try {
 		return (new Function('return '+jsonString))();
 	} catch (ex) {
-		console.log('MOKTEXT-201: Parse JSON error.\n'+jsonString);
+		console.log('MOKJS-503: Parse JSON error.\n'+jsonString);
 		return null;
 	}
 };
@@ -36,7 +36,7 @@ var execJS = function (code, data) {
 				})+"'";
 			})))(data);
 	} catch (ex) {
-		console.log('MOKTEXT-202: Template syntax error.\n{{'+code+'}}\n'+ex);
+		console.log('MOKJS-504: Template syntax error.\n{{'+code+'}}\n'+ex);
 		return false;
 	}
 };
@@ -52,7 +52,7 @@ function initCombine() {
 function combine(file, data, prefile) {
 	prefile && (file = util.resolveHCPath(prefile, file));
 	if (!fs.existsSync(prj_path+file) || !fs.statSync(prj_path+file).isFile()) {
-		err_log.push('MOKTEXT-005: '+(prefile ? prefile+' 引用的文件 ' : '文件 ')+
+		err_log.push('MOKJS-402: '+(prefile ? prefile+' 引用的文件 ' : '文件 ')+
 			file+' 不存在！');
 		return;
 	}
@@ -134,7 +134,7 @@ exports.output = function (filename, prj_conf, response) {
 		err_log.length && response.write('<script type="text/javascript">alert("'+
 			err_log.join('\\n')+'");</script>');
 		response.end('<!-- file tree:\r\n'+file_tree.join('\r\n')+
-			'\r\n-By MOKTEXT. -->');
+			'\r\n- By MOKTEXT. -->');
 		err_log = contents = combining = null;
 	} else {
 		response.writeHead(200, {'Content-Type':'text/plain'});

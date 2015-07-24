@@ -8,12 +8,12 @@ var http_port = 80; //服务器默认监听端口
 //项目配置
 var projects = {
 	'blog': {
-		//path是项目代码路径，相对于__config.js这个文件的路径，也可用绝对路径。
+		//path是项目代码路径，相对于mok-config.js这个文件的路径，也可用绝对路径。
 		//有多个开发分支时，将路径指到对应分支就行（解决多分支切换开发）。
-		path: './demos/blog/src-define/',
+		path: './demos/blog/src-node/',
 		build_path: './demos/blog/build/',
-		//遵循的模块化规范：'CMD' - CMD规范，'Modules' - CommonJS Modules规范
-		modular_spec: 'CMD',
+		//遵循的模块化规范：'CMD' - CMD规范，'CommonJS' - CommonJS Modules规范
+		modular_spec: 'CommonJS',
 		boot_js: 'abc.js',	//启动文件（种子文件）
 		common_js: 'base.js',	//公共js文件，一般包含基本库、基本组件等
 		charset: 'utf8',	//gbk
@@ -66,7 +66,7 @@ var projects = {
 	},
 	'myhtml': {
 		type: 'html',	//项目类型
-		path: './demos/html/',	//相对于__config.js的相对路径，推荐使用绝对路径
+		path: './demos/html/',	//相对于mok-config.js的相对路径，推荐使用绝对路径
 		build_path: './demos/www/',	//构建路径
 		data: {	//开发时的全局数据
 			$root: '//s.m.com/',	//图片、CSS、JS资源
@@ -98,8 +98,7 @@ var routes = {
 			regexp: /.*/,	//不满足前面格式的其他任何请求，直接定位到资源位置
 			//其实这里也可以用静态目录的方式配置，即：root: './demos/blog/static'
 			locate: function (match) {
-				//返回相对于__config.js这个文件的路径，也可用绝对路径
-				//return 'D:/1144/demos/blog/static' + match[0];
+				//返回相对于mok-config.js这个文件的路径，也可用绝对路径
 				return './demos/blog/static'+match[0];
 			}
 		}

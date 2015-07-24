@@ -1,4 +1,4 @@
-/* MOK-JS MOKJS.COM */
+/*! MOK4JS MOKJS.COM */
 if (!this.{mok}) {
 	var {mok} = {}, require = function (undef) {
 		var m = {mok}, done = {};
@@ -9,11 +9,11 @@ if (!this.{mok}) {
 			var x = m[id];
 			if (typeof x==='function') {
 				done[id] = function () {}; //jiandan-cubao-di break circular dependency
-				var module = {exports:{}};
+				var module = {exports: {}};
 				x = x(require, module.exports, module);
 				x===undef && (x = module.exports);
 			} else if (x===undef) {
-				throw "MOK-JS error: can't find module ["+id+"]";
+				throw "MOKJS-002: can't find module ["+id+"]";
 			}
 			m[id] = null;
 			return done[id] = x;

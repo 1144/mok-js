@@ -35,7 +35,7 @@ function compileSassFile(file_content, file) {
 		sass || (sass = require('node-sass'));
 		return sass.renderSync(config).css.toString(charset);
 	} catch (err) {
-		err_log.push('MOKTEXT-006: 编译sass文件 '+file+' 出错：'+err.toString());
+		err_log.push('MOKJS-502: 编译sass文件 '+file+' 出错：'+err.toString());
 		return '';
 	}
 }
@@ -90,7 +90,7 @@ function combine(file) {
 					fs.statSync(prj_path+import_file).isFile() ){
 					combine(import_file);
 				} else {
-					err_log.push('MOKTEXT-005: '+file+
+					err_log.push('MOKJS-402: '+file+
 						' 引用的文件 '+import_file+' 不存在！');
 				}
 			}
@@ -155,7 +155,7 @@ exports.output = function (filename, prj_conf, response) {
 			});
 		} else {
 			response.writeHead(200, {'Content-Type':'text/plain'});
-			response.end('MOKTEXT-101: ['+file+
+			response.end('MOKJS-602: ['+file+
 				'] is not found. The project is likely not built.');
 		}
 		glb_data = sass_config = null;
@@ -212,7 +212,6 @@ exports.build = function (argv, prj_conf, response) {
 		abc_allname = [], //存放所有的文件名，用于输出version_file时排序所有文件
 		abc_isnew = {}, //存放新增加的文件，以文件名为key，值为true
 		
-		zip = argv.hasOwnProperty('zip'),
 		version_file = prj_conf.version_file,
 		version = argv.v || '',
 		start_time = Date.now();
@@ -257,26 +256,6 @@ exports.build = function (argv, prj_conf, response) {
 				}
 			}
 		}
-		//需要生成zip
-		if (zip) {
-			try {zip = require('archiver')} catch (e) {zip = false}
-		}
-		//并且有zip模块
-		if (zip) {
-			//生成压缩文档
-			zip = zip('zip');
-			zip.on('error', function (err) {
-				err_log.push('<br/>MOKTEXT-701: 生成zip压缩包的过程中出现异常！'+
-					'<br/>错误信息：'+err.toString());
-			});
-			zip.pipe(fs.createWriteStream(path_tag.slice(0, -1)+'.zip'));
-		} else {
-			//构造伪zip对象
-			zip = {
-				append: function () {},
-				finalize: function (callback) {callback()}
-			};
-		}
 	}
 	//读取main下的所有入口文件名，遇到子目录则在构建目录里创建相应的子目录
 	function readMainFiles(path, files) {
@@ -318,7 +297,6 @@ exports.build = function (argv, prj_conf, response) {
 				fd = fs.openSync(path_tag+name, 'w', '0666');
 				fs.writeSync(fd, k, 0, charset);
 				fs.closeSync(fd);
-				zip.append(k, {name:name});
 			}
 		});
 		k = '';
@@ -333,7 +311,7 @@ exports.build = function (argv, prj_conf, response) {
 		fd = fs.openSync(prj_path+'updated-'+version_file, 'w', '0666');
 		fs.writeSync(fd, content, 0, 'utf8');
 		fs.closeSync(fd);
-		k && response.write('<br /><br/>MOKTEXT-051: 有main文件被删除了：'+k+' 等。');
+		k && response.write('<br /><br/>MOKJS-601: 有main文件被删除了：'+k+' 等。');
 	}
 	//合并和压缩
 	function combineAndCompress() {
@@ -386,17 +364,12 @@ exports.build = function (argv, prj_conf, response) {
 				fd = fs.openSync(path_tag+main_file, 'w', '0666');
 				fs.writeSync(fd, fc, 0, charset);
 				fs.closeSync(fd);
-				zip.append(fc, {name:main_file});
 			}
 		}
 		contents = combined_list = glb_data = sass_config = null;
 	}
 	function buildDone() {
 		version_file && err_log.length===0 && updateAbcFile();
-		zip.finalize(function (err) {
-			err && err_log.push('<br/>MOKTEXT-702: 生成zip压缩包失败！<br/>错误信息：'+
-				err.toString());
-		});
 		if (err_log.length) {
 			response.write('<br />'); //来个换行
 			for (var ei = 0; ei < err_log.length; ei++) {

@@ -35,7 +35,7 @@ exports.build = function (argv, prj_conf, response) {
 
 		err_log = [], //收集编译错误信息
 		br_mok = fs.readFileSync(__dirname+'/br-mok-'+
-			(cmd_spec ? 'CMD.js' : 'Modules.js'), 'utf8').replace(/{mok}/g, mok_global),
+			(cmd_spec ? 'CMD.js' : 'CommonJS.js'), 'utf8').replace(/{mok}/g, mok_global),
 		//块注释，要先移除块注释
 		reg_data_key = /\/\*{{([\D\d]+?)}}\*\//g,
 		reg_comment = /\/\*[\D\d]*?\*\//g,
@@ -117,7 +117,7 @@ exports.build = function (argv, prj_conf, response) {
 				while (req_ms.length) {
 					line = req_ms.shift()+'.js'; //复用line
 					depend_ms.push(line);
-					all_files[line] || err_log.push('MOKJS-005: '+file+' 依赖的模块 '+
+					all_files[line] || err_log.push('MOKJS-401: '+file+' 依赖的模块 '+
 						line.slice(0, -3)+' 不存在！<br/>line '+(i + 1)+': '+lines[i]);
 				}
 			}
@@ -147,7 +147,7 @@ exports.build = function (argv, prj_conf, response) {
 				while (req_ms.length) {
 					line = req_ms.shift()+'.js'; //复用line
 					depend_ms.push(line);
-					all_files[line] || err_log.push('MOKJS-005: '+file+' 依赖的模块 '+
+					all_files[line] || err_log.push('MOKJS-401: '+file+' 依赖的模块 '+
 						line.slice(0, -3)+' 不存在！<br/>line '+(i + 1)+': '+lines[i]);
 				}
 			}
@@ -230,7 +230,7 @@ exports.build = function (argv, prj_conf, response) {
 		sfs.write(prj_path+'updated-'+boot_js, content);
 		
 		deleted.length &&
-			response.write('<br/>MOKJS-051: 有main文件被删除了：'+deleted.join(', '));
+			response.write('<br/>MOKJS-601: 有main文件被删除了：'+deleted.join(', '));
 	}
 	//构建完成
 	function buildDone() {
@@ -251,7 +251,7 @@ exports.build = function (argv, prj_conf, response) {
 	function compressFile(file) {
 		child_process.exec(comp_cmd.replace(/;/g, file), function (err) {
 			if (err) {
-				err_log.push('<br/><br/>MOKJS-006: 压缩出错，文件：'+path_main+file+
+				err_log.push('<br/><br/>MOKJS-501: 压缩出错，文件：'+path_main+file+
 					'<br/>错误信息：'+err.toString());
 				return;
 			}
